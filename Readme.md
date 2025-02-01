@@ -1,4 +1,4 @@
-# Setup Percona Gallera Cluster On AKS Guide
+# Setup MYSQL Environment On AKS Guide
 
 ## **Steps:**
  - Deploy aks cluster
