@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-backup
+spec:
+  schedule: "0 0 * * *"  # Run daily at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: mysql-backup-storage
+              persistentVolumeClaim:
+                claimName: pvc-mysql-backup
+            - name: mysql-data-storage
+              persistentVolumeClaim:
+                claimName: pvc-mysql
+            - name: backup-script
+              configMap:
+                name: mysql-backup-script
+                defaultMode: 0777
+          containers:
+            - name: mysql-backup
+              image: mysql:8.0
+              command: ["/bin/sh", "-c", "/scripts/backup.sh"]
+              env:
+                - name: MYSQL_ROOT_PASSWORD
+                  value: "MYSQL_ROOT_PASSWORD"
+              volumeMounts:
+                - name: mysql-backup-storage
+                  mountPath: /backup
+                - name: mysql-data-storage
+                  mountPath: /mysql-prod  # Now backup can directly access MySQL data
+                - name: backup-script
+                  mountPath: /scripts

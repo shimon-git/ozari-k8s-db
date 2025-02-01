@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: backup-azureblob-nfs-ozari
+provisioner: blob.csi.azure.com
+parameters:
+  protocol: nfs
+  skuName: Standard_LRS
+  containerName: mysql-db-backup
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate

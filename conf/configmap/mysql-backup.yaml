@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-backup-script
+data:
+  backup.sh: |
+    #!/bin/bash
+    set -e
+
+    BACKUP_ROOT="/backup"
+
+    TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+    BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
+
+    echo "Creating backup directory: $BACKUP_DIR"
+    mkdir -p "$BACKUP_DIR"
+
+    echo "Dumping MySQL databases..."
+    mysqldump -h mysql.db.svc.cluster.local -uroot -p$MYSQL_ROOT_PASSWORD --all-databases > "$BACKUP_DIR/full-backup.sql"
+
+    echo "Copying binary logs for PITR..."
+    cp /mysql-prod/mysql-bin.* "$BACKUP_DIR/"
+
+    echo "Backup completed at $TIMESTAMP"
+
+    # Retention policy: Delete backups older than 7 days
+    echo "Cleaning up old backups..."
+    find "$BACKUP_ROOT"/* -type d -mtime +7 -exec rm -rf {} \;
+
+    echo "Old backups deleted."

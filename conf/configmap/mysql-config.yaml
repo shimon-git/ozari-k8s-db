@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  my.cnf: |
+    [mysqld]
+    bind-address = 0.0.0.0
+    default_authentication_plugin=mysql_native_password
+    max_connections = 1364
+    sql_mode = ERROR_FOR_DIVISION_BY_ZERO,STRICT_ALL_TABLES
+    max_allowed_packet = 1073741824
+    group_concat_max_len = 1844674407370955161
+    wait_timeout = 600
+    default_time_zone = 'Israel'
+    character_set_server = utf8mb4
+    collation_server = utf8mb4_unicode_ci
+
+    # Binary Logging for PITR
+    log_bin = /var/lib/mysql/mysql-bin
+    binlog_format = ROW
+    binlog_expire_logs_seconds = 604800  # (7 days)
+    server-id = 1
+
+    # Ensure PITR is complete
+    gtid_mode = ON
+    enforce-gtid-consistency = ON
+
+    # Slow Query Log
+    slow_query_log = 1
+    slow_query_log_file = /var/log/slow.log
+    long_query_time = 3
+
+    # Error Log
+    log_error = /var/log/error.log

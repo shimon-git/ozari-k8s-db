@@ -1,0 +1,12 @@
+#version: '3.8'
+
+services:
+  haproxy:
+    image: haproxy:2.3
+    container_name: haproxy
+    ports:
+      - "3306:3306"
+    volumes:
+      - /opt/haproxy-mysql/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro  # Mount haproxy.cfg
+    restart: always
+

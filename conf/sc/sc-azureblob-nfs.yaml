@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mysql-premium-ssd
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: Premium_LRS  # SSD-backed storage
+  cachingMode: None  # Recommended for MySQL (ReadOnly can cause performance issues)
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

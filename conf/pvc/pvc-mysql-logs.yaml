@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-mysql-logs
+  namespace: db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: azureblob-nfs-ozari-logs
+  volumeMode: Filesystem

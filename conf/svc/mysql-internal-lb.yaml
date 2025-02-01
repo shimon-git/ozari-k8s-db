@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service-lb
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # Internal LB
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.224.1.100  # Static IP within your AKS subnet
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+  selector:
+    app: mysql

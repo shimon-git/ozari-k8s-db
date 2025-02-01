@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: "mysql"
+  replicas: 1  # Only one replica to comply with ReadWriteOnce
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "MYSQL_ROOT_PASSWORD"  # Change this in production!
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql  # Mount the existing PVC here
+        - name: mysql-logs
+          mountPath: /var/log  # Mount the existing PVC here
+        - name: mysql-config-volume
+          mountPath: /etc/mysql/conf.d
+          #subPath: my.cnf
+
+      - name: disk-monitor
+        image: ubuntu
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            apt update && apt install -y curl
+            while true; do
+              availableSpace=$(df -h /var/lib/mysql | awk 'NR==2 {print $4}')
+              allSpace=$(df -h /var/lib/mysql | awk 'NR==2 {print $2}')
+              json_payload="{\"message\": \"Disk usage is ${availableSpace} available out of ${allSpace}\"}"
+              echo "Disk usage is ${availableSpace} available out of ${allSpace}"
+              curl -s -X POST http://172.16.0.8:5000/alert \
+                -H "monitor: disk" \
+                -H "Content-Type: application/json" \
+                -H "TotalSpace: ${allSpace}" \
+                -H "AvailableSpace: ${availableSpace}" \
+                -d "$json_payload"
+              sleep 30
+            done
+        volumeMounts:
+          - name: mysql-storage
+            mountPath: /var/lib/mysql
+
+      volumes:
+      - name: mysql-config-volume
+        configMap:
+          name: mysql-config
+      - name: mysql-storage  # Reference your existing PVC
+        persistentVolumeClaim:
+          claimName: pvc-mysql  # Change this to match your actual PVC name
+      - name: mysql-logs  # Reference your existing PVC
+        persistentVolumeClaim:
+          claimName: pvc-mysql-logs  # Change this to match your actual PVC name
+
+
+

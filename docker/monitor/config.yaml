@@ -1,0 +1,17 @@
+server:
+  port: 5000  # Port to listen on
+
+smtp:
+  host: "smtp.gmail.com"
+  port: 465
+  use_tls: true
+  username: "USERNAME"
+  password: "PASSWORD"
+  sender: "SENDER-MAIL"
+
+recipients:
+  - "RECIPIENT-1"
+  - "RECIPIENT-2"
+
+threshold:
+  disk_usage: 85  # Percentage to trigger an alert
