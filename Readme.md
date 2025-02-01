@@ -34,7 +34,7 @@
   - `az aks update --name ozari-k8s --resource-group kubedb-ozari --enable-disk-driver --enable-file-driver --enable-blob-driver --enable-snapshot-controller`
 ---
 
-## Create SC & PVC For Connecting The Cluster To The Azure Blob Storage
+## Create SC & PVC For Connecting The Cluster To Azure Storage
 
 **1.Create a storage class in order to create dynamic PV's:**
   - `k apply -f ./conf/sc/sc-azureblob-nfs.yaml`
