@@ -7,7 +7,7 @@ docker build -t disk-monitor .
 docker rm -f disk-monitor
 
 # Run the container
-docker run -d --name disk-monitor   -p 5000:5000   -v $(pwd)/config.yaml:/app/config.yaml   disk-monitor
+docker run -d --name disk-monitor --restart always -p 5000:5000   -v $(pwd)/config.yaml:/app/config.yaml   disk-monitor
 
 # List running containers
 docker ps
