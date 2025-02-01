@@ -3,9 +3,9 @@
 ## **Steps:**
  - Deploy aks cluster
  - Install the azure blob CSI on the azure-blob-storage namespace
- - Create 2 storage class one for mysql prod and the other for mysql-backup
+ - Create storage class one for mysql data prod one for mysql logs prod and the other for mysql-backup
  - Create a new namespace for managing mysql
- - Create 2 pvc's for connecting the k8s cluster to the azure blob storage
+ - Create 3 pvc's for connecting the k8s cluster to the azure blob storage and ssd disk
  - Create a config map of the mysql conf to apply
  - Deploy the statefulSet of mysql-prod
  - Verify mysql-prod is working and it's bound to pvc
